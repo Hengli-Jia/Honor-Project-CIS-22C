@@ -25,23 +25,6 @@ HuffmanNode* Huffman::build(HuffmanNode* left, HuffmanNode* right) {
     return merged;
 }
 
-void Huffman::printCode() const {
-    printCodeHelper(root, "");
-}
-
-void Huffman::printCodeHelper(const HuffmanNode* node, const std::string& prefix) const {
-    if (!node) return;
-    if (!node->left && !node->right) {
-        std::cout << node->character << ": " << prefix << std::endl;
-    }
-    printCodeHelper(node->left, prefix + "0");
-    printCodeHelper(node->right, prefix + "1");
-}
-
-void Huffman::printTree() const {
-    printTreeHelper(root, "", false);
-}
-
 void Huffman::printTreeHelper(const HuffmanNode* node, const std::string& indent, bool isRight) const {
     if (!node) return;
     printTreeHelper(node->right, indent + (isRight ? "        " : " |      "), true);
@@ -58,58 +41,65 @@ void Huffman::printTreeHelper(const HuffmanNode* node, const std::string& indent
     printTreeHelper(node->left, indent + (isRight ? " |      " : "        "), false);
 }
 
-std::string Huffman::getCode(const char ch) const {
-    std::string code;
-    if (getCodeHelper(root, ch, code))
-        return code;
-    return "";
+void Huffman::printCodeHelper(const HuffmanNode* node, const std::string& prefix) const {
+    if (!node) return;
+    if (!node->left && !node->right) {
+        std::cout << node->character << ": " << prefix << std::endl;
+    }
+    printCodeHelper(node->left, prefix + "0");
+    printCodeHelper(node->right, prefix + "1");
+}
+
+std::string Huffman::getCodeHelper(const HuffmanNode* node, char ch, std::string path) const {
+    if (!node) return "";
+    if (!node->left && !node->right) {
+        if (node->character == ch) return path;
+        return "";
+    }
+    std::string left = getCodeHelper(node->left, ch, path + "0");
+    if (!left.empty()) return left;
+    return getCodeHelper(node->right, ch, path + "1");
 }
 
 std::string Huffman::encode(const std::string text) const {
-    std::string codeMap[128];
-    encodeHelper(root, "", codeMap);
     std::string encoded;
     for (char c : text) {
-        encoded += codeMap[c];
+        encoded += encodeHelper(root, c, "");
     }
     return encoded;
 }
 
-std::string Huffman::decode(const std::string code) const {
-    std::string decoded;
-    const HuffmanNode* node = root;
-    for (char bit : code) {
-        if (bit == '0') node = node->left;
-        else if (bit == '1') node = node->right;
-        if (!node->left && !node->right) {
-            decoded += node->character;
-            node = root;
-        }
-    }
-    return decoded;
-}
-
-bool Huffman::getCodeHelper(const HuffmanNode* node, char ch, std::string& path) const{
-    if (!node) return false;
+std::string Huffman::encodeHelper(const HuffmanNode* node, char ch, const std::string& path) const {
+    if (!node) return "";
     if (!node->left && !node->right) {
-        if (node->character == ch) return true;
-        return false;
+        if (node->character == ch) return path;
+        return "";
     }
-    path.push_back('0');
-    if (getCodeHelper(node->left, ch, path)) return true;
-    path.pop_back();
-    path.push_back('1');
-    if (getCodeHelper(node->right, ch, path)) return true;
-    path.pop_back();
-    return false;
+    std::string left = encodeHelper(node->left, ch, path + "0");
+    if (!left.empty()) return left;
+    return encodeHelper(node->right, ch, path + "1");
 }
 
-void Huffman::encodeHelper(const HuffmanNode* node, const std::string& str, std::string codeMap[128]) const {
+std::string Huffman::decode(const std::string code) const {
+    std::string result;
+    int idx = 0;
+    while (idx < static_cast<int>(code.size())) {
+        decodeHelper(root, code, idx, result);
+    }
+    return result;
+}
+
+void Huffman::decodeHelper(const HuffmanNode* node, const std::string& code, int& idx, std::string& result) const {
     if (!node) return;
     if (!node->left && !node->right) {
-        if (node->character >= char(0) && node->character <= char(127))
-            codeMap[node->character] = str;
+        result += node->character;
+        return;
     }
-    encodeHelper(node->left, str + "0", codeMap);
-    encodeHelper(node->right, str + "1", codeMap);
+    if (idx < static_cast<int>(code.size())) {
+        if (code[idx] == '0')
+            decodeHelper(node->left, code, ++idx, result);
+        else if (code[idx] == '1')
+            decodeHelper(node->right, code, ++idx, result);
+    }
 }
+
