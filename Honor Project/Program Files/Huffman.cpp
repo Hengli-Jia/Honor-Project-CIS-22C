@@ -25,18 +25,26 @@ HuffmanNode* Huffman::build(HuffmanNode* left, HuffmanNode* right) {
     return merged;
 }
 
-void Huffman::printCode(const HuffmanNode* node, std::string prefix) const {
+void Huffman::printCode() const {
+    printCodeHelper(root, "");
+}
+
+void Huffman::printCodeHelper(const HuffmanNode* node, const std::string& prefix) const {
     if (!node) return;
     if (!node->left && !node->right) {
         std::cout << node->character << ": " << prefix << std::endl;
     }
-    printCode(node->left, prefix + "0");
-    printCode(node->right, prefix + "1");
+    printCodeHelper(node->left, prefix + "0");
+    printCodeHelper(node->right, prefix + "1");
 }
 
-void Huffman::printTree(const HuffmanNode* node, std::string indent, bool isRight) const {
+void Huffman::printTree() const {
+    printTreeHelper(root, "", false);
+}
+
+void Huffman::printTreeHelper(const HuffmanNode* node, const std::string& indent, bool isRight) const {
     if (!node) return;
-    printTree(node->right, indent + (isRight ? "        " : " |      "), true);
+    printTreeHelper(node->right, indent + (isRight ? "        " : " |      "), true);
 
     std::cout << indent;
     if (isRight) std::cout << " /";
@@ -47,7 +55,7 @@ void Huffman::printTree(const HuffmanNode* node, std::string indent, bool isRigh
     else
         std::cout << "*(" << node->frequency << ")" << std::endl;
 
-    printTree(node->left, indent + (isRight ? " |      " : "        "), false);
+    printTreeHelper(node->left, indent + (isRight ? " |      " : "        "), false);
 }
 
 std::string Huffman::getCode(const char ch) const {
