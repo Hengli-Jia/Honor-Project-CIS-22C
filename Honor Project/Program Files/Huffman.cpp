@@ -75,9 +75,9 @@ std::string Huffman::encodeHelper(const HuffmanNode* node, char ch, const std::s
         if (node->character == ch) return path;
         return "";
     }
-    std::string left = encodeHelper(node->left, ch, path + "0");
-    if (!left.empty()) return left;
-    return encodeHelper(node->right, ch, path + "1");
+    std::string leftResult = encodeHelper(node->left, ch, path + "0");
+    std::string rightResult = encodeHelper(node->right, ch, path + "1");
+    return !leftResult.empty() ? leftResult : rightResult;
 }
 
 std::string Huffman::decode(const std::string code) const {
