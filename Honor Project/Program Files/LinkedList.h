@@ -19,7 +19,7 @@ public:
     LinkedList();  
     ~LinkedList();  
 
-    void insertSorted(HuffmanNode* huffmanNode);  
+    void insertSorted(LinkedListNode* newNode);
     void removeFirstTwo(HuffmanNode*& first, HuffmanNode*& second);  
     void print() const;  
 
