@@ -5,16 +5,15 @@ LinkedListNode::LinkedListNode(HuffmanNode* node) : huffmanNode(node), next(null
 
 LinkedList::LinkedList() : head(nullptr), length(0) {}
 
-void LinkedList::insertSorted(HuffmanNode* huffmanNode) {
-    LinkedListNode* newNode = new LinkedListNode(huffmanNode);
+void LinkedList::insertSorted(LinkedListNode* newNode) {
     length++;
-    if (!head || huffmanNode->frequency < head->huffmanNode->frequency) {
+    if (!head || newNode->huffmanNode->frequency < head->huffmanNode->frequency) {
         newNode->next = head;
         head = newNode;
         return;
     }
     LinkedListNode* current = head;
-    while (current->next && current->next->huffmanNode->frequency <= huffmanNode->frequency) {
+    while (current->next && current->next->huffmanNode->frequency <= newNode->huffmanNode->frequency) {
         current = current->next;
     }
     newNode->next = current->next;
