@@ -8,10 +8,10 @@ using namespace std;
 void printMenu() {
     cout << "\nMenu:\n";
     cout << "1. Print the character weights (frequencies)\n";
-    cout << "2. Print Tree (Right-Root-Left ¨C indented format)\n";
+    cout << "2. Print Tree (Right-Root-Left – indented format)\n";
     cout << "3. Print the Huffman codes as strings for all characters in the list\n";
-    cout << "4. Enter one character ¨C print its Huffman code as a string\n";
-    cout << "5. Enter a word ¨C print its ASCII binary representation and its Huffman code\n";
+    cout << "4. Enter one character – print its Huffman code as a string\n";
+    cout << "5. Enter a word – print its ASCII binary representation and its Huffman code\n";
     cout << "6. Enter an encoded word, decode it, then display it\n";
     cout << "7. Enter the name of a text file, encode it, and save it to another file\n";
     cout << "8. Enter the name of the encoded file, decode it, then save it to another file\n";
@@ -38,7 +38,8 @@ int main() {
     for (int i = 0; i < 127; i++) {
         if (letterCount[i] > 0) {
             HuffmanNode* node = new HuffmanNode((char)i, letterCount[i]);
-            list.insertSorted(node);
+            LinkedListNode* newNode = new LinkedListNode(node);
+            list.insertSorted(newNode);
         }
     }
 
@@ -49,7 +50,8 @@ int main() {
         list.removeFirstTwo(first, second);
 
         HuffmanNode* merged = tree.build(first, second);
-        list.insertSorted(merged);
+        LinkedListNode* newNode = new LinkedListNode(merged);
+        list.insertSorted(newNode);
     }
     tree.setRoot(list.getHead()->huffmanNode);
 
